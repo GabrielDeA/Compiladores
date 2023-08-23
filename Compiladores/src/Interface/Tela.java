@@ -238,7 +238,7 @@ public class Tela extends JFrame {
 		textPaneMensagens.setEditable(false);
 		scrollPaneMensagens.setViewportView(textPaneMensagens);
 		
-		JLabel lblStatus = new JLabel("pasta/arquivo");
+		JLabel lblStatus = new JLabel("");
 		GridBagConstraints gbc_lblStatus = new GridBagConstraints();
 		gbc_lblStatus.anchor = GridBagConstraints.WEST;
 		gbc_lblStatus.gridwidth = 9;
@@ -283,12 +283,16 @@ public class Tela extends JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				textAreaEditor.setText("");
 				textPaneMensagens.setText("");
+				lblStatus.setText("");
 			}
 		});
 		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control N"), "Novo");
 		textPaneMensagens.getActionMap().put("Novo", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				textAreaEditor.setText("");
+				textPaneMensagens.setText("");
+				lblStatus.setText("");
 			}
 			
 		});
@@ -296,23 +300,14 @@ public class Tela extends JFrame {
 		//copiar[ctrl-C]
 		btnCopiar.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-			String text = textAreaEditor.getText();
-            if (!text.isEmpty()) {
-                java.awt.datatransfer.Clipboard clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
-                java.awt.datatransfer.StringSelection selection = new java.awt.datatransfer.StringSelection(text);
-                clipboard.setContents(selection, null);
-                textPaneMensagens.setText("código copiado!");
-            } else {
-            	textPaneMensagens.setText("não há nada para copiar!");
-            }
+				copiar(textAreaEditor, textPaneMensagens);
 			}
         });
 		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control C"), "Copiar");
 		textPaneMensagens.getActionMap().put("Copiar", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textPaneMensagens.setText("código copiado!");
-				
+				copiar(textAreaEditor, textPaneMensagens);
 			}
 		}
 		);
@@ -320,24 +315,14 @@ public class Tela extends JFrame {
 		//colar[ctrl-V]
 		btnColar.addActionListener(new java.awt.event.ActionListener() {
 	        public void actionPerformed(java.awt.event.ActionEvent e) {
-	        	Clipboard areaTransf = Toolkit.getDefaultToolkit().getSystemClipboard();
-	        	Transferable transf = areaTransf.getContents(null);
-	        	if (transf != null && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-	        		try {
-	        			String textoCopiado = (String) transf.getTransferData(DataFlavor.stringFlavor);
-	        			textAreaEditor.setText(textoCopiado);
-	        		} catch (Exception ex) {
-	        			ex.printStackTrace();
-	        			textPaneMensagens.setText("não há o que colar, area de transferência vazia(ctrl-C)!");
-	        		}
-	        	} 
+	        	colar(textAreaEditor, textPaneMensagens);
 	        }
 	        });
 			textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control V"), "Colar");
 			textPaneMensagens.getActionMap().put("Colar", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textPaneMensagens.setText("código colado!");
+				colar(textAreaEditor, textPaneMensagens);
 			}
 			
 		});
@@ -357,6 +342,31 @@ public class Tela extends JFrame {
 			
 		});
 		
+	}
+	private void copiar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
+		String text = textAreaEditor.getText();
+        if (!text.isEmpty()) {
+            java.awt.datatransfer.Clipboard clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
+            java.awt.datatransfer.StringSelection selection = new java.awt.datatransfer.StringSelection(text);
+            clipboard.setContents(selection, null);
+            textPaneMensagens.setText("código copiado!");
+        } else {
+        	textPaneMensagens.setText("não há nada para copiar!");
+        }
+	}
+	
+	private void colar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
+		Clipboard areaTransf = Toolkit.getDefaultToolkit().getSystemClipboard();
+    	Transferable transf = areaTransf.getContents(null);
+    	if (transf != null && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+    		try {
+    			String textoCopiado = (String) transf.getTransferData(DataFlavor.stringFlavor);
+    			textAreaEditor.setText(textAreaEditor.getText() + textoCopiado);
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    			textPaneMensagens.setText("não há o que colar, area de transferência vazia(ctrl-C)!");
+    		}
+    	} 
 	}
 	
 	private String mostrarEquipe() {
