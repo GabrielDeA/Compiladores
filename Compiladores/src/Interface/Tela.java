@@ -343,6 +343,11 @@ public class Tela extends JFrame {
 		});
 		
 	}
+	
+	//METODOS AUXILIARES | |
+	//					 V V
+	
+	
 	private void copiar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
 		String text = textAreaEditor.getText();
         if (!text.isEmpty()) {
