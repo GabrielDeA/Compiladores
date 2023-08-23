@@ -342,15 +342,40 @@ public class Tela extends JFrame {
 			
 		});
 		
+		//recortar[ctrl-X]
+		btnRecortar.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				recortar(textAreaEditor, textPaneMensagens);
+			}
+		});
+		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control X"), "Recortar");
+		textPaneMensagens.getActionMap().put("Recortar", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				recortar(textAreaEditor, textPaneMensagens);
+			}
+			
+		});
 	}
 	
 	//METODOS AUXILIARES | |
 	//					 V V
 	
+	private void recortar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
+		String text = textAreaEditor.getSelectedText();
+        if (text != null && !text.isEmpty()) {
+            textAreaEditor.cut();
+            textPaneMensagens.setText("código recortado!");
+        } else {
+        	textPaneMensagens.setText("não há nada para recortar!");
+        }
+	}
 	
-	private void copiar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
-		String text = textAreaEditor.getText();
-        if (!text.isEmpty()) {
+	
+	private void copiar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {	
+		String text = textAreaEditor.getSelectedText();
+        if (text != null) {
             java.awt.datatransfer.Clipboard clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
             java.awt.datatransfer.StringSelection selection = new java.awt.datatransfer.StringSelection(text);
             clipboard.setContents(selection, null);
@@ -367,6 +392,7 @@ public class Tela extends JFrame {
     		try {
     			String textoCopiado = (String) transf.getTransferData(DataFlavor.stringFlavor);
     			textAreaEditor.setText(textAreaEditor.getText() + textoCopiado);
+    			textPaneMensagens.setText("código colado!");
     		} catch (Exception ex) {
     			ex.printStackTrace();
     			textPaneMensagens.setText("não há o que colar, area de transferência vazia(ctrl-C)!");
