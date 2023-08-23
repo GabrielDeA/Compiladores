@@ -14,6 +14,12 @@ import javax.swing.JFileChooser;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.LayoutManager;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+
 import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -26,6 +32,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
@@ -85,6 +92,10 @@ public class Tela extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
 		
 		JButton btnNovo = new JButton("Novo [ctrl-n]");
+		Image img = new ImageIcon(this.getClass().getResource("/novo1.png")).getImage();
+		btnNovo.setIcon(new ImageIcon(img));
+		btnNovo.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnNovo.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -97,10 +108,15 @@ public class Tela extends JFrame {
 		contentPane.add(btnNovo, gbc_btnNovo);
 		
 		JButton btnAbrir = new JButton("Abrir [ctrl-o]");
+		Image img1 = new ImageIcon(this.getClass().getResource("/abrir.png")).getImage();
+		btnAbrir.setIcon(new ImageIcon(img1));
+		btnAbrir.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnAbrir.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnAbrir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
+		
 		GridBagConstraints gbc_btnAbrir = new GridBagConstraints();
 		gbc_btnAbrir.fill = GridBagConstraints.VERTICAL;
 		gbc_btnAbrir.insets = new Insets(0, 0, 5, 5);
@@ -109,6 +125,10 @@ public class Tela extends JFrame {
 		contentPane.add(btnAbrir, gbc_btnAbrir);
 		
 		JButton btnSalvar = new JButton("Salvar [ctrl-s]");
+		Image img2 = new ImageIcon(this.getClass().getResource("/salvar.png")).getImage();
+		btnSalvar.setIcon(new ImageIcon(img2));
+		btnSalvar.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnSalvar.setHorizontalTextPosition(SwingConstants.CENTER);
 		GridBagConstraints gbc_btnSalvar = new GridBagConstraints();
 		gbc_btnSalvar.fill = GridBagConstraints.VERTICAL;
 		gbc_btnSalvar.insets = new Insets(0, 0, 5, 5);
@@ -117,6 +137,15 @@ public class Tela extends JFrame {
 		contentPane.add(btnSalvar, gbc_btnSalvar);
 		
 		JButton btnCopiar = new JButton("Copiar [ctrl-c]");
+		Image img3 = new ImageIcon(this.getClass().getResource("/copiar.png")).getImage();
+		btnCopiar.setIcon(new ImageIcon(img3));
+		btnCopiar.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnCopiar.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnCopiar.addActionListener(new ActionListener() {
+			@Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
 		GridBagConstraints gbc_btnCopiar = new GridBagConstraints();
 		gbc_btnCopiar.fill = GridBagConstraints.VERTICAL;
 		gbc_btnCopiar.insets = new Insets(0, 0, 5, 5);
@@ -125,6 +154,15 @@ public class Tela extends JFrame {
 		contentPane.add(btnCopiar, gbc_btnCopiar);
 		
 		JButton btnColar = new JButton("Colar [ctrl-v]");
+		Image img4 = new ImageIcon(this.getClass().getResource("/colar1.png")).getImage();
+		btnColar.setIcon(new ImageIcon(img4));
+		btnColar.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnColar.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnColar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {	
+			}	
+		});
 		GridBagConstraints gbc_btnColar = new GridBagConstraints();
 		gbc_btnColar.fill = GridBagConstraints.VERTICAL;
 		gbc_btnColar.insets = new Insets(0, 0, 5, 5);
@@ -133,6 +171,10 @@ public class Tela extends JFrame {
 		contentPane.add(btnColar, gbc_btnColar);
 		
 		JButton btnRecortar = new JButton("Recortar[ctrl-x]");
+		Image img5 = new ImageIcon(this.getClass().getResource("/recorta.png")).getImage();
+		btnRecortar.setIcon(new ImageIcon(img5));
+		btnRecortar.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnRecortar.setHorizontalTextPosition(SwingConstants.CENTER);
 		GridBagConstraints gbc_btnRecortar = new GridBagConstraints();
 		gbc_btnRecortar.fill = GridBagConstraints.BOTH;
 		gbc_btnRecortar.insets = new Insets(0, 0, 5, 5);
@@ -141,6 +183,10 @@ public class Tela extends JFrame {
 		contentPane.add(btnRecortar, gbc_btnRecortar);
 		
 		JButton btnCompilar = new JButton("Compilar[F7]");
+		Image img6 = new ImageIcon(this.getClass().getResource("/compilar.png")).getImage();
+		btnCompilar.setIcon(new ImageIcon(img6));
+		btnCompilar.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnCompilar.setHorizontalTextPosition(SwingConstants.CENTER);
 		GridBagConstraints gbc_btnCompilar = new GridBagConstraints();
 		gbc_btnCompilar.fill = GridBagConstraints.VERTICAL;
 		gbc_btnCompilar.insets = new Insets(0, 0, 5, 5);
@@ -149,6 +195,10 @@ public class Tela extends JFrame {
 		contentPane.add(btnCompilar, gbc_btnCompilar);
 		
 		JButton btnEquipe = new JButton("Equipe[F1]");
+		Image img7 = new ImageIcon(this.getClass().getResource("/equipe.png")).getImage();
+		btnEquipe.setIcon(new ImageIcon(img7));
+		btnEquipe.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnEquipe.setHorizontalTextPosition(SwingConstants.CENTER);
 		GridBagConstraints gbc_btnEquipe = new GridBagConstraints();
 		gbc_btnEquipe.fill = GridBagConstraints.VERTICAL;
 		gbc_btnEquipe.insets = new Insets(0, 0, 5, 5);
@@ -224,6 +274,70 @@ public class Tela extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				textPaneMensagens.setText("compilação de programas ainda não foi implementada");
+			}
+			
+		});
+		
+		//novo[ctrl-N]
+		btnNovo.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				textAreaEditor.setText("");
+				textPaneMensagens.setText("");
+			}
+		});
+		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control N"), "Novo");
+		textPaneMensagens.getActionMap().put("Novo", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+			
+		});
+		
+		//copiar[ctrl-C]
+		btnCopiar.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+			String text = textAreaEditor.getText();
+            if (!text.isEmpty()) {
+                java.awt.datatransfer.Clipboard clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
+                java.awt.datatransfer.StringSelection selection = new java.awt.datatransfer.StringSelection(text);
+                clipboard.setContents(selection, null);
+                textPaneMensagens.setText("código copiado!");
+            } else {
+            	textPaneMensagens.setText("não há nada para copiar!");
+            }
+			}
+        });
+		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control C"), "Copiar");
+		textPaneMensagens.getActionMap().put("Copiar", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textPaneMensagens.setText("código copiado!");
+				
+			}
+		}
+		);
+		
+		//colar[ctrl-V]
+		btnColar.addActionListener(new java.awt.event.ActionListener() {
+	        public void actionPerformed(java.awt.event.ActionEvent e) {
+	        	Clipboard areaTransf = Toolkit.getDefaultToolkit().getSystemClipboard();
+	        	Transferable transf = areaTransf.getContents(null);
+	        	if (transf != null && transf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+	        		try {
+	        			String textoCopiado = (String) transf.getTransferData(DataFlavor.stringFlavor);
+	        			textAreaEditor.setText(textoCopiado);
+	        		} catch (Exception ex) {
+	        			ex.printStackTrace();
+	        			textPaneMensagens.setText("não há o que colar, area de transferência vazia(ctrl-C)!");
+	        		}
+	        	} 
+	        }
+	        });
+			textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control V"), "Colar");
+			textPaneMensagens.getActionMap().put("Colar", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textPaneMensagens.setText("código colado!");
 			}
 			
 		});
