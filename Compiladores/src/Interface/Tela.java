@@ -36,7 +36,10 @@ import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
@@ -330,14 +333,14 @@ public class Tela extends JFrame {
 		//abrir[ctrl-0]
 		btnAbrir.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				textAreaEditor.setText(Abrir(contentPane, lblStatus));
+				Abrir(contentPane, lblStatus, textPaneMensagens, textAreaEditor);
 			}
 		});
 		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control O"), "Abrir");
 		textPaneMensagens.getActionMap().put("Abrir", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textAreaEditor.setText(Abrir(contentPane, lblStatus));
+				Abrir(contentPane, lblStatus, textPaneMensagens, textAreaEditor);
 			}
 			
 		});
@@ -357,10 +360,56 @@ public class Tela extends JFrame {
 			}
 			
 		});
+		
+		//salvar [ctrl-S]
+		btnSalvar.addActionListener(new java.awt.event.ActionListener( ) {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				salvar(textAreaEditor, textPaneMensagens, lblStatus, contentPane);
+			}
+		});
+		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control S"), "Recortar");
+		textPaneMensagens.getActionMap().put("Recortar", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				salvar(textAreaEditor, textPaneMensagens, lblStatus, contentPane);
+			}
+			
+		});
 	}
 	
 	//METODOS AUXILIARES | |
 	//					 V V
+	
+	private void salvar(JTextArea textAreaEditor,  JTextPane textPaneMensagens, JLabel lblStatus, JPanel ContentFrame) {
+		if(lblStatus.getText().equals("")) {
+			 JFileChooser fileChooser = new JFileChooser();
+			 FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+			 fileChooser.setFileFilter(filter);
+		        int returnValue = fileChooser.showSaveDialog(null);
+
+		        if (returnValue == JFileChooser.APPROVE_OPTION) {
+		            String selectedFile = fileChooser.getSelectedFile().getAbsolutePath();
+		            String selectedFileTxt = selectedFile + ".txt";
+		            String content = textAreaEditor.getText();
+
+		            try (BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFileTxt))) {
+		                writer.write(content);
+		                lblStatus.setText(selectedFile);
+		            } catch (IOException e) {
+		                e.printStackTrace();
+		            }
+		        }
+		} else {
+			 String content = textAreaEditor.getText();
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(lblStatus.getText()))) {
+				writer.write(content);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		textPaneMensagens.setText("Arquivo Salvo!");
+	}
 	
 	private void recortar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
 		String text = textAreaEditor.getSelectedText();
@@ -404,7 +453,7 @@ public class Tela extends JFrame {
 		return "Adriano Gabriel Girardi \nGabriel De Antoni Santos \nLyan Rodrigues";
 	}
 	
-	private String Abrir(JPanel contentPane, JLabel lblStatus) {
+	private void Abrir(JPanel contentPane, JLabel lblStatus, JTextPane textPaneMensagens, JTextArea textAreaEditor) {
 		  JFileChooser chooser = new JFileChooser();
 		  FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
 		  chooser.setFileFilter(filter);
@@ -414,13 +463,12 @@ public class Tela extends JFrame {
 				  String filePath = chooser.getSelectedFile().getAbsolutePath();
 				  String fileContent = readFile(filePath);
 				  lblStatus.setText(filePath);
-				  return fileContent;
+				 textAreaEditor.setText(fileContent);
+				 textPaneMensagens.setText("");
 			  } catch (Exception e ) {
 				  e.printStackTrace();
 			  }
 		  }
-			return null;
-		  
 	}
 	
     private static String readFile(String filePath) throws Exception {
