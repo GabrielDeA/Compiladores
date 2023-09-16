@@ -1,40 +1,65 @@
 package Interface;
 
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.Document;
+
 import java.awt.GridBagLayout;
-import java.awt.Image;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+
+import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
+
+import javax.swing.JScrollBar;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.ImageIcon;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+//import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.awt.event.ActionEvent;
+import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
-import javax.swing.ScrollPaneConstants;
+
+import java.awt.Color;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JSplitPane;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import net.miginfocom.swing.MigLayout;
+import java.awt.BorderLayout;
+import javax.swing.JLabel;
+import java.awt.Dimension;
+import javax.swing.JTextArea;
 
 public class Tela extends JFrame {
 
@@ -249,14 +274,14 @@ public class Tela extends JFrame {
 		//Compilar[F7]
 		btnCompilar.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				textPaneMensagens.setText("compilação de programas ainda não foi implementada");
+				compilar(textAreaEditor, textPaneMensagens);
 			}
 		});
 		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F7"), "Compilar");
 		textPaneMensagens.getActionMap().put("Compilar", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textPaneMensagens.setText("compilação de programas ainda não foi implementada");
+				textPaneMensagens.setText("erro na compilação");
 			}
 			
 		});
@@ -361,6 +386,46 @@ public class Tela extends JFrame {
 	//METODOS AUXILIARES | |
 	//					 V V
 	
+	
+	private void compilar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
+		Lexico lexico = new Lexico();
+		String inputText = textAreaEditor.getText();
+		StringReader reader = new StringReader(inputText);
+		StringBuilder ordemFinal = new StringBuilder();
+		lexico.setInput(reader);
+		try {
+		    Token t = null;
+		    while ((t = lexico.nextToken()) != null) {
+		        if (!t.isErrorToken(t)) {
+		        	String ordem = "linha " + getLineFromPosition(t.getPosition(), inputText) + "   " + " classe "
+		        + Token.getClassName(t.getId())+ "   " + "      lexema " + t.getLexeme() + "\n";
+		        	ordemFinal.append(ordem);	
+		        	textPaneMensagens.setText(ordemFinal.toString() + "\n" + "\n" + "programa compilado com sucesso");
+		        }  
+		    }
+		} catch (LexicalError e) {
+			textPaneMensagens.setText("");
+			String mensagemErro = "linha " + getLineFromPosition(e.getPosition(), inputText) + ": " + e.getLexeme()
+			+ " " + e.getMessage();
+		    textPaneMensagens.setText(mensagemErro);
+			
+		}
+		
+	}
+	
+	private int getLineFromPosition(int position, String input) {
+		int linhas = 1;
+		int pos = 0;
+		for(int i = 0; i < input.length() && pos <= position; i++) {
+			char c = input.charAt(i);
+			if (c == '\n') {
+				linhas++;
+			}
+			pos++;
+		}
+		return linhas;
+	}
+
 	private void salvar(JTextArea textAreaEditor,  JTextPane textPaneMensagens, JLabel lblStatus, JPanel ContentFrame) {
 		if(lblStatus.getText().equals("")) {
 			 JFileChooser fileChooser = new JFileChooser();
