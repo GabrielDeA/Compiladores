@@ -388,7 +388,7 @@ public class Tela extends JFrame {
 	
 	
 	private void compilar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
-		Lexico lexico = new Lexico();
+		 /* Lexico lexico = new Lexico();
 		String inputText = textAreaEditor.getText();
 		StringReader reader = new StringReader(inputText);
 		StringBuilder ordemFinal = new StringBuilder();
@@ -409,6 +409,36 @@ public class Tela extends JFrame {
 			+ " " + e.getMessage();
 		    textPaneMensagens.setText(mensagemErro);
 			
+		} */
+		
+		Lexico lexico = new Lexico();
+		Sintatico sintatico = new Sintatico();
+		Semantico semantico = new Semantico();
+		//...
+		lexico.setInput( /* entrada */ );
+		//...
+		try
+		{
+			sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
+		}
+		// mensagem: programa compilado com sucesso - área reservada para mensagens
+		
+		catch ( LexicalError e )
+		{
+			//Trata erros léxicos, conforme especificação da parte 2 - do compilador
+		}
+		catch ( SyntaticError e )
+		{
+		     System.out.println(e.getPosition() + " símbolo encontrado: na entrada " + e.getMessage()); 
+			 
+			//Trata erros sintáticos
+			//linha 				sugestão: converter getPosition em linha
+			//símbolo encontrado    sugestão: implementar um método getToken no sintatico
+			//mensagem - símbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR		
+		}
+		catch ( SemanticError e )
+		{
+			//Trata erros semânticos
 		}
 		
 	}
