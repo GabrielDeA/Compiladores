@@ -159,7 +159,7 @@ public interface ParserConstants {
     String[] PARSER_ERROR = {
             "",
             "esperado EOF",
-            "esperado id",
+            "esperado idenntificadpr",
             "esperado constanteI",
             "esperado constanteF",
             "esperado constanteS",
