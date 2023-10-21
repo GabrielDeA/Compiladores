@@ -24,6 +24,10 @@ public class Sintatico implements Constants
     {
         return x >= FIRST_SEMANTIC_ACTION;
     }
+    
+    public Token getCurrentToken() {
+    	return currentToken;
+    }
 
     private boolean step() throws LexicalError, SyntaticError, SemanticError
     {
@@ -33,32 +37,25 @@ public class Sintatico implements Constants
             if (previousToken != null)
                 pos = previousToken.getPosition()+previousToken.getLexeme().length();
 
-            currentToken = new Token(DOLLAR, "$", pos);
+            currentToken = new Token(DOLLAR, "EOF", pos);
         }
 
         int x = ((Integer)stack.pop()).intValue();
         int a = currentToken.getId();
 
-        if (x == EPSILON)
-        {
+        if (x == EPSILON) {
             return false;
-        }
-        else if (isTerminal(x))
-        {
-            if (x == a)
-            {
-                if (stack.empty())
+        } else if (isTerminal(x)) {
+            if (x == a) {
+                if (stack.empty()) {
                     return true;
-                else
-                {
+                } else {
                     previousToken = currentToken;
                     currentToken = scanner.nextToken();
                     return false;
                 }
-            }
-            else
-            {
-                throw new SyntaticError(PARSER_ERROR[x], currentToken.getPosition());
+            } else {
+            	 throw new SyntaticError(PARSER_ERROR[x], currentToken.getPosition());
             }
         }
         else if (isNonTerminal(x))
@@ -84,7 +81,7 @@ public class Sintatico implements Constants
             //empilha a produ��o em ordem reversa
             for (int i=production.length-1; i>=0; i--)
             {
-                stack.push(new Integer(production[i]));
+                stack.push(Integer.valueOf(production[i]));
             }
             return true;
         }
@@ -92,14 +89,14 @@ public class Sintatico implements Constants
             return false;
     }
 
-    public void parse(Lexico scanner, Semantico semanticAnalyser) throws LexicalError, SyntaticError, SemanticError
+	public void parse(Lexico scanner, Semantico semanticAnalyser) throws LexicalError, SyntaticError, SemanticError
     {
         this.scanner = scanner;
         this.semanticAnalyser = semanticAnalyser;
 
         stack.clear();
-        stack.push(new Integer(DOLLAR));
-        stack.push(new Integer(START_SYMBOL));
+        stack.push(Integer.valueOf(DOLLAR));
+        stack.push(Integer.valueOf(START_SYMBOL));
 
         currentToken = scanner.nextToken();
 

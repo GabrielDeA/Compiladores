@@ -11,4 +11,5 @@ public class SyntaticError extends AnalysisError
     {
         super(msg);
     }
+    
 }

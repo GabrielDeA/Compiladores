@@ -62,7 +62,7 @@ import java.awt.Dimension;
 import javax.swing.JTextArea;
 
 public class Tela extends JFrame {
-
+	private String input;
 	private JPanel contentPane;
 
 	/**
@@ -236,6 +236,7 @@ public class Tela extends JFrame {
 		scrollPaneEditor.setViewportView(textAreaEditor);
 		textAreaEditor.setBorder(new NumberedBorder());
 		
+		
 		JScrollPane scrollPaneMensagens = new JScrollPane();
 		scrollPaneMensagens.setMinimumSize(new Dimension(800, 200));
 		splitPane.setRightComponent(scrollPaneMensagens);
@@ -381,6 +382,8 @@ public class Tela extends JFrame {
 			}
 			
 		});
+		
+		
 	}
 	
 	//METODOS AUXILIARES | |
@@ -388,62 +391,38 @@ public class Tela extends JFrame {
 	
 	
 	private void compilar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
-		 /* Lexico lexico = new Lexico();
 		String inputText = textAreaEditor.getText();
-		StringReader reader = new StringReader(inputText);
-		StringBuilder ordemFinal = new StringBuilder();
-		lexico.setInput(reader);
-		try {
-		    Token t = null;
-		    while ((t = lexico.nextToken()) != null) {
-		        if (!t.isErrorToken(t)) {
-		        	String ordem = "linha " + getLineFromPosition(t.getPosition(), inputText) + "   " + " classe "
-		        + Token.getClassName(t.getId())+ "   " + "      lexema " + t.getLexeme() + "\n";
-		        	ordemFinal.append(ordem);	
-		        	textPaneMensagens.setText(ordemFinal.toString() + "\n" + "\n" + "programa compilado com sucesso");
-		        }  
-		    }
-		} catch (LexicalError e) {
-			textPaneMensagens.setText("");
-			String mensagemErro = "linha " + getLineFromPosition(e.getPosition(), inputText) + ": " + e.getLexeme()
-			+ " " + e.getMessage();
-		    textPaneMensagens.setText(mensagemErro);
-			
-		} */
-		
-		Lexico lexico = new Lexico();
+		Lexico lexico = new Lexico(inputText);
 		Sintatico sintatico = new Sintatico();
 		Semantico semantico = new Semantico();
-		//...
-		lexico.setInput( /* entrada */ );
 		//...
 		try
 		{
 			sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
+			textPaneMensagens.setText("programa compilado com sucesso");
 		}
 		// mensagem: programa compilado com sucesso - área reservada para mensagens
 		
 		catch ( LexicalError e )
 		{
-			//Trata erros léxicos, conforme especificação da parte 2 - do compilador
+			textPaneMensagens.setText("");
+			String mensagemErro = "Erro na linha " + getLineFromPosition(e.getPosition(), inputText) + " - " + e.getLexeme() + " " + e.getMessage();
+			textPaneMensagens.setText(mensagemErro);
 		}
 		catch ( SyntaticError e )
-		{
-		     System.out.println(e.getPosition() + " símbolo encontrado: na entrada " + e.getMessage()); 
-			 
-			//Trata erros sintáticos
-			//linha 				sugestão: converter getPosition em linha
-			//símbolo encontrado    sugestão: implementar um método getToken no sintatico
-			//mensagem - símbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR		
+		{	
+		     textPaneMensagens.setText("Erro na linha " + getLineFromPosition(e.getPosition(), inputText) + " - encontrado " + sintatico.getCurrentToken().getLexeme() + "\n" + e.getMessage());		
 		}
 		catch ( SemanticError e )
 		{
 			//Trata erros semânticos
 		}
 		
+		//textPaneMensagens.setText("programa compilado com sucesso");
+		
 	}
 	
-	private int getLineFromPosition(int position, String input) {
+	public static int getLineFromPosition(int position, String input) {
 		int linhas = 1;
 		int pos = 0;
 		for(int i = 0; i < input.length() && pos <= position; i++) {
@@ -556,4 +535,5 @@ public class Tela extends JFrame {
         }
         return content.toString();
     }
-}
+	
+	}
