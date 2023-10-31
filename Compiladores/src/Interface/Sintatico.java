@@ -2,45 +2,39 @@ package Interface;
 
 import java.util.Stack;
 
-public class Sintatico implements Constants
-{
+public class Sintatico implements Constants {
     private Stack stack = new Stack();
     private Token currentToken;
     private Token previousToken;
     private Lexico scanner;
     private Semantico semanticAnalyser;
 
-    private static final boolean isTerminal(int x)
-    {
+    private static final boolean isTerminal(int x) {
         return x < FIRST_NON_TERMINAL;
     }
 
-    private static final boolean isNonTerminal(int x)
-    {
+    private static final boolean isNonTerminal(int x) {
         return x >= FIRST_NON_TERMINAL && x < FIRST_SEMANTIC_ACTION;
     }
 
-    private static final boolean isSemanticAction(int x)
-    {
+    private static final boolean isSemanticAction(int x) {
         return x >= FIRST_SEMANTIC_ACTION;
     }
-    
+
     public Token getCurrentToken() {
-    	return currentToken;
+        return currentToken;
     }
 
-    private boolean step() throws LexicalError, SyntaticError, SemanticError
-    {
-        if (currentToken == null)
-        {
+    private boolean step() throws LexicalError, SyntaticError, SemanticError {
+        if (currentToken == null) {
             int pos = 0;
             if (previousToken != null)
-                pos = previousToken.getPosition()+previousToken.getLexeme().length();
+                pos = previousToken.getPosition() + previousToken.getLexeme().length();
 
             currentToken = new Token(DOLLAR, "EOF", pos);
         }
 
-        int x = ((Integer)stack.pop()).intValue();
+        int x = ((Integer) stack.pop()).intValue();
         int a = currentToken.getId();
 
         if (x == EPSILON) {
@@ -55,42 +49,34 @@ public class Sintatico implements Constants
                     return false;
                 }
             } else {
-            	 throw new SyntaticError(PARSER_ERROR[x], currentToken.getPosition());
+                throw new SyntaticError(PARSER_ERROR[x], currentToken.getPosition());
             }
-        }
-        else if (isNonTerminal(x))
-        {
+        } else if (isNonTerminal(x)) {
             if (pushProduction(x, a))
                 return false;
             else
                 throw new SyntaticError(PARSER_ERROR[x], currentToken.getPosition());
-        }
-        else // isSemanticAction(x)
+        } else // isSemanticAction(x)
         {
-            semanticAnalyser.executeAction(x-FIRST_SEMANTIC_ACTION, previousToken);
+            semanticAnalyser.executeAction(x - FIRST_SEMANTIC_ACTION, previousToken);
             return false;
         }
     }
 
-    private boolean pushProduction(int topStack, int tokenInput)
-    {
-        int p = PARSER_TABLE[topStack-FIRST_NON_TERMINAL][tokenInput-1];
-        if (p >= 0)
-        {
+    private boolean pushProduction(int topStack, int tokenInput) {
+        int p = PARSER_TABLE[topStack - FIRST_NON_TERMINAL][tokenInput - 1];
+        if (p >= 0) {
             int[] production = PRODUCTIONS[p];
-            //empilha a produ��o em ordem reversa
-            for (int i=production.length-1; i>=0; i--)
-            {
+            // empilha a produ��o em ordem reversa
+            for (int i = production.length - 1; i >= 0; i--) {
                 stack.push(Integer.valueOf(production[i]));
             }
             return true;
-        }
-        else
+        } else
             return false;
     }
 
-	public void parse(Lexico scanner, Semantico semanticAnalyser) throws LexicalError, SyntaticError, SemanticError
-    {
+    public void parse(Lexico scanner, Semantico semanticAnalyser) throws LexicalError, SyntaticError, SemanticError {
         this.scanner = scanner;
         this.semanticAnalyser = semanticAnalyser;
 
@@ -100,7 +86,7 @@ public class Sintatico implements Constants
 
         currentToken = scanner.nextToken();
 
-        while ( ! step() )
+        while (!step())
             ;
     }
 }
