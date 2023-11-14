@@ -18,6 +18,8 @@ public class Semantico implements Constants
         case 100: metodo_acao100 ();       break;
 		case 101: metodo_acao101 ();       break;
 		case 102: metodo_acao102 ();       break;
+		case 103: metodo_acao103 ();	   break;
+		case 104: metodo_acao104 ();	   break;
 		case 105: metodo_acao105 ();       break;
 		case 106: metodo_acao106 ();       break;
 		case 114: metodo_acao114 (token);  break;
@@ -26,6 +28,38 @@ public class Semantico implements Constants
 	 	default:  System.out.println("Ação #"+action+", com token: "+token+" não foi implementada."); 
 		}
     }
+
+	private void metodo_acao104() {
+		// TODO Auto-generated method stub
+		pilha_tipos.pop();
+		pilha_tipos.pop();
+		pilha_tipos.add("bool");
+		codigo_objeto.add("or \n");
+		
+	}
+
+	private void metodo_acao103() {
+		// TODO Auto-generated method stub
+		pilha_tipos.pop();
+		pilha_tipos.pop();
+		pilha_tipos.add("bool");
+		codigo_objeto.add("and \n");
+		
+		
+		/*
+		if(pilha_tipos.peek() == "bool") {
+		Object elemento1 = pilha_tipos.pop();
+			if(pilha_tipos.peek() == "bool") {
+				
+				pilha_tipos.pop();
+				metodo_acao106();
+				
+			} else {
+				pilha_tipos.add(elemento1);
+			}
+		}
+		*/
+	}
 
 	private void metodo_acao116(Token token) {
 		// TODO Auto-generated method stub
@@ -36,13 +70,13 @@ public class Semantico implements Constants
 	private void metodo_acao106() {
 		// TODO Auto-generated method stub
 		pilha_tipos.add("bool");
-		codigo_objeto.add("ldc.r4.0");
+		codigo_objeto.add("ldc.i4.0 \n");
 	}
 
 	private void metodo_acao105() {
 		// TODO Auto-generated method stub
 		pilha_tipos.add("bool");
-		codigo_objeto.add("ldc.r4.1");
+		codigo_objeto.add("ldc.i4.1 \n");
 	}
 
 	private void metodo_acao115(Token token) {
@@ -55,7 +89,7 @@ public class Semantico implements Constants
 		// TODO Auto-generated method stub
 		pilha_tipos.add("int64");
 		codigo_objeto.add("ldc.i8 " + token.getLexeme() + "\n");
-		codigo_objeto.add("conv.i8" + "\n");
+		codigo_objeto.add("conv.r8" + "\n");
 	}
 
 	private void metodo_acao102() {
