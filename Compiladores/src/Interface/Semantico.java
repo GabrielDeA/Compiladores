@@ -22,12 +22,85 @@ public class Semantico implements Constants
 		case 104: metodo_acao104 ();	   break;
 		case 105: metodo_acao105 ();       break;
 		case 106: metodo_acao106 ();       break;
+		case 107: metodo_acao107 ();       break;
+		case 108: metodo_acao108 (token);       break;
+		case 110: metodo_acao110 ();	   break;
+		case 111: metodo_acao111 ();	   break;
+		case 112: metodo_acao112 ();	   break;
+		case 113: metodo_acao113 ();	   break;
 		case 114: metodo_acao114 (token);  break;
 		case 115: metodo_acao115 (token);  break;
 		case 116: metodo_acao116 (token);  break;
 	 	default:  System.out.println("Ação #"+action+", com token: "+token+" não foi implementada."); 
 		}
     }
+    
+    private void metodo_acao108(Token token) {
+		// TODO Auto-generated method stub
+		operador_relacional = token.getLexeme();
+	}
+    
+    private void metodo_acao109(Token token) {
+		// TODO Auto-generated method stub
+		operador_relacional = token.getLexeme();
+	}
+
+	private void metodo_acao107() {
+		// TODO Auto-generated method stub
+		codigo_objeto.add("ldc.i4.1 \n xor \n" );
+	}
+
+	private void metodo_acao111() {
+		// TODO Auto-generated method stub
+		Object e1 = pilha_tipos.pop();
+		Object e2 = pilha_tipos.pop();
+		if(e1 == "int64" && e2 == "int64") {
+			codigo_objeto.add("sub \n");
+			pilha_tipos.add("int64");
+		} else {
+			codigo_objeto.add("sub \n");
+			pilha_tipos.add("float64");
+		}
+	}
+
+	private void metodo_acao110() {
+		// TODO Auto-generated method stub
+		Object e1 = pilha_tipos.pop();
+		Object e2 = pilha_tipos.pop();
+		if(e1 == "int64" && e2 == "int64") {
+			codigo_objeto.add("add \n");
+			pilha_tipos.add("int64");
+		} else {
+			codigo_objeto.add("add \n");
+			pilha_tipos.add("float64");
+		}
+	}
+
+	private void metodo_acao112() {
+		// TODO Auto-generated method stub
+		Object e1 = pilha_tipos.pop();
+		Object e2 = pilha_tipos.pop();
+		if(e1 == "int64" && e2 == "int64") {
+			codigo_objeto.add("mul \n");
+			pilha_tipos.add("int64");
+		} else {
+			codigo_objeto.add("mul \n");
+			pilha_tipos.add("float64");
+		}
+	}
+	
+	private void metodo_acao113() {
+		// TODO Auto-generated method stub
+		Object e1 = pilha_tipos.pop();
+		Object e2 = pilha_tipos.pop();
+		if(e1 == "int64" && e2 == "int64") {
+			codigo_objeto.add("div \n");
+			pilha_tipos.add("int64");
+		} else {
+			codigo_objeto.add("div \n");
+			pilha_tipos.add("float64");
+		}
+	}
 
 	private void metodo_acao104() {
 		// TODO Auto-generated method stub
@@ -45,20 +118,6 @@ public class Semantico implements Constants
 		pilha_tipos.add("bool");
 		codigo_objeto.add("and \n");
 		
-		
-		/*
-		if(pilha_tipos.peek() == "bool") {
-		Object elemento1 = pilha_tipos.pop();
-			if(pilha_tipos.peek() == "bool") {
-				
-				pilha_tipos.pop();
-				metodo_acao106();
-				
-			} else {
-				pilha_tipos.add(elemento1);
-			}
-		}
-		*/
 	}
 
 	private void metodo_acao116(Token token) {
