@@ -10,6 +10,7 @@ public class Semantico implements Constants
 	//private ArrayList<String> codigo_objeto = new ArrayList<String>(); 
 	private List<String> codigo_objeto = new ArrayList<String>();
 	private Stack pilha_tipos = new Stack();
+	private Stack pilha_rotulos = new Stack();
 	
     public void executeAction(int action, Token token)	throws SemanticError
     {
@@ -32,17 +33,47 @@ public class Semantico implements Constants
 		case 114: metodo_acao114 (token);  break;
 		case 115: metodo_acao115 (token);  break;
 		case 116: metodo_acao116 (token);  break;
+		case 117: metodo_acao117 (); 	   break;
 	 	default:  System.out.println("Ação #"+action+", com token: "+token+" não foi implementada."); 
 		}
     }
     
-    private void metodo_acao108(Token token) {
+    private void metodo_acao117() {
+		// TODO Auto-generated method stub
+		codigo_objeto.add("ldc.i8 -1 \n");
+		codigo_objeto.add("conv.r8 \n");
+		codigo_objeto.add("mul \n");
+	}
+
+	private void metodo_acao108(Token token) {
 		// TODO Auto-generated method stub
 		operador_relacional = token.getLexeme();
 	}
     
     private void metodo_acao109() {
-		// TODO Auto-generated method stub
+		Object e1 = pilha_tipos.pop();
+		Object e2 = pilha_tipos.pop();
+		switch(operador_relacional) {
+		case "==":
+			pilha_tipos.add("bool");
+			codigo_objeto.add("ceq \n");
+			break;
+		case "!=":
+			pilha_tipos.add("bool");
+			codigo_objeto.add("ceq \n");
+			metodo_acao106();
+			codigo_objeto.add("ceq \n");
+			break;
+		case ">":
+			pilha_tipos.add("bool");
+			codigo_objeto.add("cgt \n");
+			break;
+		case "<":
+			pilha_tipos.add("bool");
+			codigo_objeto.add("clt \n");
+			break;
+			default:
+		}
 		
 	}
 
