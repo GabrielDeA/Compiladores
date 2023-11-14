@@ -60,7 +60,7 @@ public class Lexico implements Constants
                 }
             }
         }
-        if (endState < 0 || (endState != state && tokenForState(lastState) == -2))
+        if (endState < 0 || (endState != state && tokenForState(lastState) == -2) && !this.getCurrentToken().equals(Constants.t_palavra_reservada))
         		throw new LexicalError(SCANNER_ERROR[lastState], start, input.charAt(position - 1));
         	        
         position = end;

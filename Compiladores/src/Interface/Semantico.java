@@ -23,7 +23,8 @@ public class Semantico implements Constants
 		case 105: metodo_acao105 ();       break;
 		case 106: metodo_acao106 ();       break;
 		case 107: metodo_acao107 ();       break;
-		case 108: metodo_acao108 (token);       break;
+		case 108: metodo_acao108 (token);  break;
+		case 109: metodo_acao109 ();	   break;
 		case 110: metodo_acao110 ();	   break;
 		case 111: metodo_acao111 ();	   break;
 		case 112: metodo_acao112 ();	   break;
@@ -40,9 +41,9 @@ public class Semantico implements Constants
 		operador_relacional = token.getLexeme();
 	}
     
-    private void metodo_acao109(Token token) {
+    private void metodo_acao109() {
 		// TODO Auto-generated method stub
-		operador_relacional = token.getLexeme();
+		
 	}
 
 	private void metodo_acao107() {
