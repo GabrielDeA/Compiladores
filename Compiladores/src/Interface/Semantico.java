@@ -1,7 +1,9 @@
 package Interface;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class Semantico implements Constants
@@ -11,6 +13,9 @@ public class Semantico implements Constants
 	private List<String> codigo_objeto = new ArrayList<String>();
 	private Stack pilha_tipos = new Stack();
 	private Stack pilha_rotulos = new Stack();
+	int contador_rotulos = 0;
+	private List<String> lista_id = new ArrayList<String>();
+	private Map<String, String[]> tabela_simbolos  = new HashMap<String, String[]>();
 	
     public void executeAction(int action, Token token)	throws SemanticError
     {
@@ -34,11 +39,172 @@ public class Semantico implements Constants
 		case 115: metodo_acao115 (token);  break;
 		case 116: metodo_acao116 (token);  break;
 		case 117: metodo_acao117 (); 	   break;
+		case 118: metodo_acao118 (token);  break;
+		case 119: metodo_acao119 (); 	   break;
+		case 120: metodo_acao120 (); 	   break;
+		case 121: metodo_acao121 ();  	   break;
+		case 122: metodo_acao122 (token);  break;
+		case 123: metodo_acao123 ();  	   break;
+		case 124: metodo_acao124 (token);  break;
+		case 125: metodo_acao125 (token);  break;
+		case 126: metodo_acao126 (token);  break;
+		case 127: metodo_acao127 (token);  break;
+		case 128: metodo_acao128 (token);  break;
+		
 	 	default:  System.out.println("Ação #"+action+", com token: "+token+" não foi implementada."); 
 		}
     }
-    
-    private void metodo_acao117() {
+
+    private void metodo_acao128(Token token) throws SemanticError{
+		pilha_tipos.pop();
+		for(int i= 0; i > lista_id.size(); i--) {
+			codigo_objeto.add("dup");
+		}
+		for(String id : lista_id) {
+			if(tabela_simbolos.containsKey(id)) {
+				throw new SemanticError(token.getLexeme() + "ja declarado");
+			} else if (id.startsWith("_i")){
+				codigo_objeto.add("conv.i8");
+			}
+			codigo_objeto.add("stloc" + id);
+		}
+	}
+
+	private void metodo_acao127(Token token) throws SemanticError{
+		for (String id : lista_id) {
+			if(tabela_simbolos.containsKey(id)) {
+				throw new SemanticError(token.getLexeme() + "ja declarado");
+			}
+			if(id.startsWith("_i")) {
+				String[] SeInt64 = new String[2];
+				SeInt64[0] = "int64";
+				tabela_simbolos.put(id, SeInt64);
+				codigo_objeto.add(".locals (int64" + id + ") \n" );
+			}
+			if(id.startsWith("_f")) {
+				String[] SeFloat64 = new String[2];
+				SeFloat64[0] = "float64";
+				tabela_simbolos.put(id, SeFloat64);
+				codigo_objeto.add(".locals (float64" + id + ") \n" );
+			}
+			if(id.startsWith("_s")) {
+				String[] SeString = new String[2];
+				SeString [0] = "string";				
+				tabela_simbolos.put(id, SeString );
+				codigo_objeto.add(".locals (string" + id + ") \n" );
+			}
+			if(id.startsWith("_b")) {
+				String[] SeBool = new String[2];
+				SeBool[0] = "bool";
+				tabela_simbolos.put(id, SeBool);
+				codigo_objeto.add(".locals (bool" + id + ") \n" );
+			}
+			
+		}
+		
+		lista_id.clear();
+		
+	}
+
+	private void metodo_acao126(Token token) throws SemanticError{
+
+		for (String id : lista_id) {
+			if(tabela_simbolos.containsKey(id)) {
+				throw new SemanticError(token.getLexeme() + "ja declarado");
+			}
+			if(id.startsWith("_i")) {
+				String[] SeInt64 = new String[2];
+				SeInt64[0] = "int64";
+				SeInt64[1] = token.getLexeme();
+				tabela_simbolos.put(id, SeInt64);
+			}
+			if(id.startsWith("_f")) {
+				String[] SeFloat64 = new String[2];
+				SeFloat64[0] = "float64";
+				SeFloat64[1] = token.getLexeme();
+				tabela_simbolos.put(id, SeFloat64);
+			}
+			if(id.startsWith("_s")) {
+				String[] SeString = new String[2];
+				SeString [0] = "string";
+				SeString [1] = token.getLexeme();
+				tabela_simbolos.put(id, SeString );
+			}
+			if(id.startsWith("_b")) {
+				String[] SeBool = new String[2];
+				SeBool[0] = "bool";
+				SeBool [1] = token.getLexeme();
+				tabela_simbolos.put(id, SeBool);
+		}
+			}
+		lista_id.clear();
+		
+	}
+
+	private void metodo_acao125(Token token) {
+		lista_id.add(token.getLexeme());
+	}
+
+	private void metodo_acao124(Token token) throws SemanticError {
+		// TODO Auto-generated method stub
+    	if(!pilha_tipos.pop().equals("bool")) {
+			throw new SemanticError ("expressao incompativel em comando de repeticao", token.getPosition());
+		}
+    	String rotulo = (String) pilha_rotulos.pop();
+    	codigo_objeto.add("brtrue" + rotulo + "\n");
+	}
+
+	private void metodo_acao123() {
+		// TODO Auto-generated method stub
+		String rotulo1 = (String) pilha_rotulos.pop();
+		String rotulo2 = (String) pilha_rotulos.pop();
+		codigo_objeto.add("br " + rotulo1 + "\n");
+		codigo_objeto.add(rotulo2 + ": " + "\n");
+	}
+
+	private void metodo_acao122(Token token) throws SemanticError {
+		// TODO Auto-generated method stub
+    	if(!pilha_tipos.pop().equals("bool")) {
+			throw new SemanticError ("expressao incompativel em comando de repeticao", token.getPosition());
+		}
+    	String rotulo = "novo_rotulo";
+    	codigo_objeto.add("brfalse " + rotulo + contador_rotulos++ + "\n");
+    	pilha_rotulos.push(rotulo + contador_rotulos);
+	}
+	
+
+	private void metodo_acao121() {
+		// TODO Auto-generated method stub
+		String rotulo = "novo_rotulo";
+		codigo_objeto.add(rotulo + contador_rotulos++ + ": " + "\n");
+		pilha_rotulos.push(rotulo + contador_rotulos);
+	}
+
+	private void metodo_acao119() {
+		// TODO Auto-generated method stub
+		codigo_objeto.add(pilha_rotulos.pop() + ": " + "\n");
+	}
+
+	private void metodo_acao120() {
+		// TODO Auto-generated method stub
+		String rotulo = "novo_rotulo";
+		codigo_objeto.add("br " + rotulo + contador_rotulos++ + "\n");
+		String rotulo2 = (String) pilha_rotulos.pop();
+		codigo_objeto.add(rotulo2 + ": " + "n");
+		pilha_rotulos.add(rotulo + contador_rotulos);
+		}
+
+	private void metodo_acao118(Token token) throws SemanticError {
+		// TODO Auto-generated method stub
+		if(!pilha_tipos.pop().equals("bool")) {
+			throw new SemanticError ("expressao incompativel em comando de selecao", token.getPosition());
+		}
+    	String rotulo = "novo_rotulo";
+    	codigo_objeto.add("brfalse " + rotulo + contador_rotulos++ + "\n");
+    	pilha_rotulos.push(rotulo + contador_rotulos);
+	}
+
+	private void metodo_acao117() {
 		// TODO Auto-generated method stub
 		codigo_objeto.add("ldc.i8 -1 \n");
 		codigo_objeto.add("conv.r8 \n");
