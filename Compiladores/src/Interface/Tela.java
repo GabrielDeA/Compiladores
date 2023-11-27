@@ -275,7 +275,7 @@ public class Tela extends JFrame {
 		//Compilar[F7]
 		btnCompilar.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				compilar(textAreaEditor, textPaneMensagens);
+				compilar(textAreaEditor, textPaneMensagens, lblStatus);
 			}
 		});
 		textPaneMensagens.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F7"), "Compilar");
@@ -390,7 +390,7 @@ public class Tela extends JFrame {
 	//					 V V
 	
 	
-	private void compilar(JTextArea textAreaEditor, JTextPane textPaneMensagens) {
+	private void compilar(JTextArea textAreaEditor, JTextPane textPaneMensagens, JLabel lblStatus) {
 		String inputText = textAreaEditor.getText();
 		Lexico lexico = new Lexico(inputText);
 		Sintatico sintatico = new Sintatico();
@@ -416,6 +416,17 @@ public class Tela extends JFrame {
 		catch ( SemanticError e )
 		{
 			//Trata erros semânticos
+		}
+		if(lblStatus.equals("")) {
+			
+		} else {
+			String selectedFileIl = lblStatus.getText().substring(0, lblStatus.getText().length() - 4) + ".il";
+			String content = textAreaEditor.getText();
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFileIl))) {
+                writer.write(content);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 		}
 		
 		//textPaneMensagens.setText("programa compilado com sucesso");

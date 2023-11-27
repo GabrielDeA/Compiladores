@@ -380,11 +380,12 @@ public class Semantico implements Constants
 		codigo_objeto.add("  ret\r\n"
 				+ "  }\r\n"
 				+ "}");
-		for (int i = 0; i<codigo_objeto.size(); i++) {
-			System.out.print(codigo_objeto.get(i));	
+		
+		//for (int i = 0; i<codigo_objeto.size(); i++) {
+		//	System.out.print(codigo_objeto.get(i));	
 		}
 		
-	}
+	
 
 	private void metodo_acao100() {
 		// TODO Auto-generated method stub
