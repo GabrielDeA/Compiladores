@@ -175,17 +175,17 @@ public class Semantico implements Constants
     	if(!pilha_tipos.pop().equals("bool")) {
 			throw new SemanticError ("expressao incompativel em comando de repeticao", token.getPosition());
 		}
-    	String rotulo = "novo_rotulo";
-    	codigo_objeto.add("brfalse " + rotulo + contador_rotulos++ + "\n");
-    	pilha_rotulos.push(rotulo + contador_rotulos);
+    	String rotulo = "novo_rotulo" + contador_rotulos++;
+    	codigo_objeto.add("brfalse " + rotulo  + "\n"); //removido + contador_rotulos++
+    	pilha_rotulos.push(rotulo ); //removido + contador_rotulos
 	}
 	
 
 	private void metodo_acao121() {
 		// TODO Auto-generated method stub
-		String rotulo = "novo_rotulo";
-		codigo_objeto.add(rotulo + contador_rotulos++ + ": " + "\n");
-		pilha_rotulos.push(rotulo + contador_rotulos);
+		String rotulo = "novo_rotulo" + contador_rotulos++;
+		codigo_objeto.add(rotulo + ": " + "\n"); //removido + contador_rotulos++ 
+		pilha_rotulos.push(rotulo ); //removido + contador_rotulos
 	}
 
 	private void metodo_acao119() {
@@ -195,11 +195,11 @@ public class Semantico implements Constants
 
 	private void metodo_acao120() {
 		// TODO Auto-generated method stub
-		String rotulo = "novo_rotulo";
-		codigo_objeto.add("br " + rotulo + contador_rotulos++ + "\n");
+		String rotulo = "novo_rotulo" + contador_rotulos++;
+		codigo_objeto.add("br " + rotulo + "\n"); // removido: + contador_rotulos++ 
 		String rotulo2 = (String) pilha_rotulos.pop();
-		codigo_objeto.add(rotulo2 + ": " + "n");
-		pilha_rotulos.add(rotulo + contador_rotulos);
+		codigo_objeto.add(rotulo2 + ": " + "\n");
+		pilha_rotulos.add(rotulo ); //removido: + contador_rotulos
 		}
 
 	private void metodo_acao118(Token token) throws SemanticError {
@@ -207,9 +207,9 @@ public class Semantico implements Constants
 		if(!pilha_tipos.pop().equals("bool")) {
 			throw new SemanticError ("expressao incompativel em comando de selecao", token.getPosition());
 		}
-    	String rotulo = "novo_rotulo";
-    	codigo_objeto.add("brfalse " + rotulo + contador_rotulos++ + "\n");
-    	pilha_rotulos.push(rotulo + contador_rotulos);
+    	String rotulo = "novo_rotulo" + contador_rotulos ++;
+    	codigo_objeto.add("brfalse " + rotulo + "\n"); //removido  + contador_rotulos++
+    	pilha_rotulos.push(rotulo); //removido  + contador_rotulos
 	}
 
 	private void metodo_acao117() {
