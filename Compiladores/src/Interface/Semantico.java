@@ -10,20 +10,12 @@ public class Semantico implements Constants
 {
 	private String operador_relacional;
 	//private ArrayList<String> codigo_objeto = new ArrayList<String>(); 
-	public List<String> codigo_objeto = new ArrayList<String>();
+	private List<String> codigo_objeto = new ArrayList<String>();
 	private Stack pilha_tipos = new Stack();
 	private Stack pilha_rotulos = new Stack();
 	int contador_rotulos = 0;
 	private List<String> lista_id = new ArrayList<String>();
 	private Map<String, String[]> tabela_simbolos  = new HashMap<String, String[]>();
-	
-	public String getCodigo_Objeto () {
-		String str = "";
-		for (int i = 0; i<codigo_objeto.size(); i++) {
-			str += codigo_objeto.get(i);
-				}
-		return str;
-	}
 	
     public void executeAction(int action, Token token)	throws SemanticError
     {
@@ -62,7 +54,7 @@ public class Semantico implements Constants
 	 	default:  System.out.println("Ação #"+action+", com token: "+token+" não foi implementada."); 
 		}
     }
-    
+
     private void metodo_acao128(Token token) throws SemanticError{
 		pilha_tipos.pop();
 		for(int i= 0; i > lista_id.size(); i--) {
@@ -175,17 +167,17 @@ public class Semantico implements Constants
     	if(!pilha_tipos.pop().equals("bool")) {
 			throw new SemanticError ("expressao incompativel em comando de repeticao", token.getPosition());
 		}
-    	String rotulo = "novo_rotulo" + contador_rotulos++;
-    	codigo_objeto.add("brfalse " + rotulo  + "\n"); //removido + contador_rotulos++
-    	pilha_rotulos.push(rotulo ); //removido + contador_rotulos
+    	String rotulo = "novo_rotulo";
+    	codigo_objeto.add("brfalse " + rotulo + contador_rotulos++ + "\n");
+    	pilha_rotulos.push(rotulo + contador_rotulos);
 	}
 	
 
 	private void metodo_acao121() {
 		// TODO Auto-generated method stub
-		String rotulo = "novo_rotulo" + contador_rotulos++;
-		codigo_objeto.add(rotulo + ": " + "\n"); //removido + contador_rotulos++ 
-		pilha_rotulos.push(rotulo ); //removido + contador_rotulos
+		String rotulo = "novo_rotulo";
+		codigo_objeto.add(rotulo + contador_rotulos++ + ": " + "\n");
+		pilha_rotulos.push(rotulo + contador_rotulos);
 	}
 
 	private void metodo_acao119() {
@@ -195,11 +187,11 @@ public class Semantico implements Constants
 
 	private void metodo_acao120() {
 		// TODO Auto-generated method stub
-		String rotulo = "novo_rotulo" + contador_rotulos++;
-		codigo_objeto.add("br " + rotulo + "\n"); // removido: + contador_rotulos++ 
+		String rotulo = "novo_rotulo";
+		codigo_objeto.add("br " + rotulo + contador_rotulos++ + "\n");
 		String rotulo2 = (String) pilha_rotulos.pop();
-		codigo_objeto.add(rotulo2 + ": " + "\n");
-		pilha_rotulos.add(rotulo ); //removido: + contador_rotulos
+		codigo_objeto.add(rotulo2 + ": " + "n");
+		pilha_rotulos.add(rotulo + contador_rotulos);
 		}
 
 	private void metodo_acao118(Token token) throws SemanticError {
@@ -207,9 +199,9 @@ public class Semantico implements Constants
 		if(!pilha_tipos.pop().equals("bool")) {
 			throw new SemanticError ("expressao incompativel em comando de selecao", token.getPosition());
 		}
-    	String rotulo = "novo_rotulo" + contador_rotulos ++;
-    	codigo_objeto.add("brfalse " + rotulo + "\n"); //removido  + contador_rotulos++
-    	pilha_rotulos.push(rotulo); //removido  + contador_rotulos
+    	String rotulo = "novo_rotulo";
+    	codigo_objeto.add("brfalse " + rotulo + contador_rotulos++ + "\n");
+    	pilha_rotulos.push(rotulo + contador_rotulos);
 	}
 
 	private void metodo_acao117() {

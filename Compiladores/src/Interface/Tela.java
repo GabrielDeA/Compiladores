@@ -417,14 +417,13 @@ public class Tela extends JFrame {
 		{
 			//Trata erros semânticos
 		}
-		if(lblStatus.getText().equals("")) {
+		if(lblStatus.equals("")) {
 			
 		} else {
-			
-			String selectedFileIl = lblStatus.getText().substring(0, lblStatus.getText().length()) + ".il";
-			String codCompilado = semantico.getCodigo_Objeto();
+			String selectedFileIl = lblStatus.getText().substring(0, lblStatus.getText().length() - 4) + ".il";
+			String content = textAreaEditor.getText();
 			try (BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFileIl))) {
-                writer.write(codCompilado);
+                writer.write(content);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -468,7 +467,7 @@ public class Tela extends JFrame {
 		        }
 		} else {
 			 String content = textAreaEditor.getText();
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(lblStatus.getText()+".txt"))) {
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(lblStatus.getText()))) {
 				writer.write(content);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -528,7 +527,7 @@ public class Tela extends JFrame {
 			  try {
 				  String filePath = chooser.getSelectedFile().getAbsolutePath();
 				  String fileContent = readFile(filePath);
-				  lblStatus.setText(filePath.substring(0, filePath.length() - 4));
+				  lblStatus.setText(filePath);
 				 textAreaEditor.setText(fileContent);
 				 textPaneMensagens.setText("");
 			  } catch (Exception e ) {
