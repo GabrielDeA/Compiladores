@@ -10,12 +10,20 @@ public class Semantico implements Constants
 {
 	private String operador_relacional;
 	//private ArrayList<String> codigo_objeto = new ArrayList<String>(); 
-	private List<String> codigo_objeto = new ArrayList<String>();
+	public List<String> codigo_objeto = new ArrayList<String>();
 	private Stack pilha_tipos = new Stack();
 	private Stack pilha_rotulos = new Stack();
 	int contador_rotulos = 0;
 	private List<String> lista_id = new ArrayList<String>();
 	private Map<String, String[]> tabela_simbolos  = new HashMap<String, String[]>();
+	
+	public String getCodigo_Objeto () {
+		String str = "";
+		for (int i = 0; i<codigo_objeto.size(); i++) {
+			str += codigo_objeto.get(i);
+				}
+		return str;
+	}
 	
     public void executeAction(int action, Token token)	throws SemanticError
     {
@@ -54,7 +62,7 @@ public class Semantico implements Constants
 	 	default:  System.out.println("Ação #"+action+", com token: "+token+" não foi implementada."); 
 		}
     }
-
+    
     private void metodo_acao128(Token token) throws SemanticError{
 		pilha_tipos.pop();
 		for(int i= 0; i > lista_id.size(); i--) {

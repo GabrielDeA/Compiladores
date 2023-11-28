@@ -417,13 +417,14 @@ public class Tela extends JFrame {
 		{
 			//Trata erros semânticos
 		}
-		if(lblStatus.equals("")) {
+		if(lblStatus.getText().equals("")) {
 			
 		} else {
-			String selectedFileIl = lblStatus.getText().substring(0, lblStatus.getText().length() - 4) + ".il";
-			String content = textAreaEditor.getText();
+			
+			String selectedFileIl = lblStatus.getText() + ".il";
+			String codCompilado = semantico.getCodigo_Objeto();
 			try (BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFileIl))) {
-                writer.write(content);
+                writer.write(codCompilado);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -467,7 +468,7 @@ public class Tela extends JFrame {
 		        }
 		} else {
 			 String content = textAreaEditor.getText();
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(lblStatus.getText()))) {
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(lblStatus.getText()+".txt"))) {
 				writer.write(content);
 			} catch (IOException e) {
 				e.printStackTrace();
