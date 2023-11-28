@@ -178,7 +178,7 @@ while = palavra_reservada: "while"
 <termo>			::= <fator> <termo_> ;
 <termo_>			::= î | "*" <fator> #112 <termo_> | "/" <fator> #113 <termo_> ;
 
-<fator>			::= id | 
+<fator>			::= id #131 | 
 			    	    constanteI #114 | 
 		   	    	    constanteF #115 | 
 			    	    constanteS #116 | 
