@@ -74,7 +74,7 @@ public class Semantico implements Constants
 
         String[] tipoIdentificador = tabela_simbolos.get(identificador);
 
-        if (tipoIdentificador[1].equals("const")) {
+        if (tipoIdentificador[0].equals("const")) {
             switch (tipoIdentificador[0]) {
                 case "int64":
                     codigo_objeto.add("ldc.i8 " + tipoIdentificador[2] + "\n");
@@ -122,18 +122,27 @@ public class Semantico implements Constants
     }
     
     private void metodo_acao128(Token token) throws SemanticError{
-		pilha_tipos.pop();
-		for(int i= 0; i > lista_id.size(); i--) {
-			codigo_objeto.add("dup");
+		String tipoExpressao = (String) pilha_tipos.pop();
+		for(int i= 0; i < lista_id.size(); i++) {
+			codigo_objeto.add("dup \n");
 		}
 		for(String id : lista_id) {
-			if(tabela_simbolos.containsKey(id)) {
-				throw new SemanticError(token.getLexeme() + "ja declarado");
-			} else if (id.startsWith("_i")){
-				codigo_objeto.add("conv.i8");
+			if(!tabela_simbolos.containsKey(id)) {
+				throw new SemanticError(id + " não declarado");
+			} 
+			String[] tipoIdentificador = tabela_simbolos.get(id);
+			if (tipoIdentificador != null && tipoIdentificador.length > 1 && tipoIdentificador[1] != null && tipoIdentificador[1].equals("const")) {
+				throw new SemanticError("Não é possível atribuir valor a uma constante: " + id);
 			}
-			codigo_objeto.add("stloc" + id);
+			
+			if (tipoExpressao.equals("int64")) {
+				codigo_objeto.add("conv.i8 \n");
+			}
+			
+			codigo_objeto.add("stloc" + id + " \n");
 		}
+		
+		lista_id.clear();
 	}
 
 	private void metodo_acao127(Token token) throws SemanticError{
@@ -141,30 +150,25 @@ public class Semantico implements Constants
 			if(tabela_simbolos.containsKey(id)) {
 				throw new SemanticError(token.getLexeme() + "ja declarado");
 			}
-			if(id.startsWith("_i")) {
-				String[] SeInt64 = new String[2];
-				SeInt64[0] = "int64";
-				tabela_simbolos.put(id, SeInt64);
-				codigo_objeto.add(".locals (int64" + id + ") \n" );
-			}
-			if(id.startsWith("_f")) {
-				String[] SeFloat64 = new String[2];
-				SeFloat64[0] = "float64";
-				tabela_simbolos.put(id, SeFloat64);
-				codigo_objeto.add(".locals (float64" + id + ") \n" );
-			}
-			if(id.startsWith("_s")) {
-				String[] SeString = new String[2];
-				SeString [0] = "string";				
-				tabela_simbolos.put(id, SeString );
-				codigo_objeto.add(".locals (string" + id + ") \n" );
-			}
-			if(id.startsWith("_b")) {
-				String[] SeBool = new String[2];
-				SeBool[0] = "bool";
-				tabela_simbolos.put(id, SeBool);
-				codigo_objeto.add(".locals (bool" + id + ") \n" );
-			}
+		}
+		for (String id : lista_id) {
+			String tipo;
+			if (id.startsWith("_i")) {
+	            tipo = "int64";
+	        } else if (id.startsWith("_f")) {
+	            tipo = "float64";
+	        } else if (id.startsWith("_s")) {
+	            tipo = "string";
+	        } else if (id.startsWith("_b")) {
+	            tipo = "bool";
+	        } else {
+	            throw new SemanticError(id + " não é um identificador");
+	        }
+			
+			String[] tipoIdentificador = new String[2];
+			tipoIdentificador[0] = tipo;
+			tabela_simbolos.put(id, tipoIdentificador);
+			codigo_objeto.add(".locals (" + tipo + " " + id + ") \n");
 			
 		}
 		
@@ -173,35 +177,29 @@ public class Semantico implements Constants
 	}
 
 	private void metodo_acao126(Token token) throws SemanticError{
-
 		for (String id : lista_id) {
 			if(tabela_simbolos.containsKey(id)) {
 				throw new SemanticError(token.getLexeme() + "ja declarado");
 			}
-			if(id.startsWith("_i")) {
-				String[] SeInt64 = new String[2];
-				SeInt64[0] = "int64";
-				SeInt64[1] = token.getLexeme();
-				tabela_simbolos.put(id, SeInt64);
-			}
-			if(id.startsWith("_f")) {
-				String[] SeFloat64 = new String[2];
-				SeFloat64[0] = "float64";
-				SeFloat64[1] = token.getLexeme();
-				tabela_simbolos.put(id, SeFloat64);
-			}
-			if(id.startsWith("_s")) {
-				String[] SeString = new String[2];
-				SeString [0] = "string";
-				SeString [1] = token.getLexeme();
-				tabela_simbolos.put(id, SeString );
-			}
-			if(id.startsWith("_b")) {
-				String[] SeBool = new String[2];
-				SeBool[0] = "bool";
-				SeBool [1] = token.getLexeme();
-				tabela_simbolos.put(id, SeBool);
 		}
+			for (String id : lista_id) {
+				String tipo;
+		        if (id.startsWith("_i")) {
+		            tipo = "int64";
+		        } else if (id.startsWith("_f")) {
+		            tipo = "float64";
+		        } else if (id.startsWith("_s")) {
+		            tipo = "string";
+		        } else if (id.startsWith("_b")) {
+		            tipo = "bool";
+		        } else {
+		            throw new SemanticError(id + " não é um identificador");
+		        }
+		        
+		        String[] tipoIdentificador = new String[2];
+		        tipoIdentificador[0] = tipo;
+		        tipoIdentificador[1] = token.getLexeme();
+		        tabela_simbolos.put(id, tipoIdentificador);
 			}
 		lista_id.clear();
 		
@@ -212,8 +210,8 @@ public class Semantico implements Constants
 	}
 
 	private void metodo_acao124(Token token) throws SemanticError {
-		// TODO Auto-generated method stub
-    	if(!pilha_tipos.pop().equals("bool")) {
+		Object tipoExpressao = pilha_tipos.pop();
+    	if(!tipoExpressao.equals("bool")) {
 			throw new SemanticError ("expressao incompativel em comando de repeticao", token.getPosition());
 		}
     	String rotulo = (String) pilha_rotulos.pop();
@@ -233,9 +231,9 @@ public class Semantico implements Constants
     	if(!pilha_tipos.pop().equals("bool")) {
 			throw new SemanticError ("expressao incompativel em comando de repeticao", token.getPosition());
 		}
-    	String rotulo = "novo_rotulo" + contador_rotulos++;
-    	codigo_objeto.add("brfalse " + rotulo  + "\n"); //removido + contador_rotulos++
-    	pilha_rotulos.push(rotulo ); //removido + contador_rotulos
+    	String rotulo2 = "novo_rotulo" + contador_rotulos++;
+    	codigo_objeto.add("brfalse " + rotulo2  + "\n"); //removido + contador_rotulos++
+    	pilha_rotulos.push(rotulo2); //removido + contador_rotulos
 	}
 	
 
@@ -243,7 +241,7 @@ public class Semantico implements Constants
 		// TODO Auto-generated method stub
 		String rotulo = "novo_rotulo" + contador_rotulos++;
 		codigo_objeto.add(rotulo + ": " + "\n"); //removido + contador_rotulos++ 
-		pilha_rotulos.push(rotulo ); //removido + contador_rotulos
+		pilha_rotulos.push(rotulo); //removido + contador_rotulos
 	}
 
 	private void metodo_acao119() {
@@ -257,7 +255,7 @@ public class Semantico implements Constants
 		codigo_objeto.add("br " + rotulo + "\n"); // removido: + contador_rotulos++ 
 		String rotulo2 = (String) pilha_rotulos.pop();
 		codigo_objeto.add(rotulo2 + ": " + "\n");
-		pilha_rotulos.add(rotulo ); //removido: + contador_rotulos
+		pilha_rotulos.add(rotulo); //removido: + contador_rotulos
 		}
 
 	private void metodo_acao118(Token token) throws SemanticError {
@@ -271,10 +269,17 @@ public class Semantico implements Constants
 	}
 
 	private void metodo_acao117() {
-		// TODO Auto-generated method stub
-		codigo_objeto.add("ldc.i8 -1 \n");
-		codigo_objeto.add("conv.r8 \n");
-		codigo_objeto.add("mul \n");
+	    Object tipoExpressao = pilha_tipos.pop();
+
+	    if (tipoExpressao.equals("int64")) {
+	        codigo_objeto.add("ldc.i8 -1 \n");
+	        codigo_objeto.add("mul \n");
+	        pilha_tipos.add("int64");
+	    } else if (tipoExpressao.equals("float64")) {
+	        codigo_objeto.add("ldc.r8 -1.0 \n");
+	        codigo_objeto.add("mul \n");
+	        pilha_tipos.add("float64");
+	    }
 	}
 
 	private void metodo_acao108(Token token) {
@@ -287,26 +292,27 @@ public class Semantico implements Constants
 		Object e2 = pilha_tipos.pop();
 		switch(operador_relacional) {
 		case "==":
-			pilha_tipos.add("bool");
-			codigo_objeto.add("ceq \n");
-			break;
-		case "!=":
-			pilha_tipos.add("bool");
-			codigo_objeto.add("ceq \n");
-			metodo_acao106();
-			codigo_objeto.add("ceq \n");
-			break;
-		case ">":
-			pilha_tipos.add("bool");
-			codigo_objeto.add("cgt \n");
-			break;
-		case "<":
-			pilha_tipos.add("bool");
-			codigo_objeto.add("clt \n");
-			break;
-			default:
-		}
-		
+            codigo_objeto.add("ceq \n");
+            break;
+        case "!=":
+            codigo_objeto.add("ceq \n ldc.i4.0 \n ceq \n");
+            break;
+        case "<":
+            codigo_objeto.add("clt \n");
+            break;
+        case ">":
+            codigo_objeto.add("cgt \n");
+            break;
+        case "<=":
+            codigo_objeto.add("clt \n ldc.i4.0 \n ceq \n");
+            break;
+        case ">=":
+            codigo_objeto.add("cgt \n ldc.i4.0 \n ceq \n");
+            break;
+        default:
+            break;
+    }
+		pilha_tipos.push("bool");
 	}
 
 	private void metodo_acao107() {
@@ -315,62 +321,58 @@ public class Semantico implements Constants
 	}
 
 	private void metodo_acao111() {
-		// TODO Auto-generated method stub
-		Object e1 = pilha_tipos.pop();
-		Object e2 = pilha_tipos.pop();
-		if(e1 == "int64" && e2 == "int64") {
-			codigo_objeto.add("sub \n");
-			pilha_tipos.add("int64");
-		} else {
-			codigo_objeto.add("sub \n");
-			pilha_tipos.add("float64");
-		}
+	    Object e1 = pilha_tipos.pop();
+	    Object e2 = pilha_tipos.pop();
+	    if ("int64".equals(e1) && "int64".equals(e2)) {
+	        codigo_objeto.add("sub \n");
+	        pilha_tipos.add("int64");
+	    } else {
+	        codigo_objeto.add("sub \n");
+	        pilha_tipos.add("float64");
+	    }
 	}
 
 	private void metodo_acao110() {
-		// TODO Auto-generated method stub
-		Object e1 = pilha_tipos.pop();
-		Object e2 = pilha_tipos.pop();
-		if(e1 == "int64" && e2 == "int64") {
-			codigo_objeto.add("add \n");
-			pilha_tipos.add("int64");
-		} else {
-			codigo_objeto.add("add \n");
-			pilha_tipos.add("float64");
-		}
+	    Object e1 = pilha_tipos.pop();
+	    Object e2 = pilha_tipos.pop();
+	    if ("int64".equals(e1) && "int64".equals(e2)) {
+	        codigo_objeto.add("add \n");
+	        pilha_tipos.add("int64");
+	    } else {
+	        codigo_objeto.add("add \n");
+	        pilha_tipos.add("float64");
+	    }
 	}
 
 	private void metodo_acao112() {
-		// TODO Auto-generated method stub
-		Object e1 = pilha_tipos.pop();
-		Object e2 = pilha_tipos.pop();
-		if(e1 == "int64" && e2 == "int64") {
-			codigo_objeto.add("mul \n");
-			pilha_tipos.add("int64");
-		} else {
-			codigo_objeto.add("mul \n");
-			pilha_tipos.add("float64");
-		}
+	    Object e1 = pilha_tipos.pop();
+	    Object e2 = pilha_tipos.pop();
+	    if ("int64".equals(e1) && "int64".equals(e2)) {
+	        codigo_objeto.add("mul \n");
+	        pilha_tipos.add("int64");
+	    } else {
+	        codigo_objeto.add("mul \n");
+	        pilha_tipos.add("float64");
+	    }
 	}
-	
+
 	private void metodo_acao113() {
-		// TODO Auto-generated method stub
-		Object e1 = pilha_tipos.pop();
-		Object e2 = pilha_tipos.pop();
-		if(e1 == "int64" && e2 == "int64") {
-			codigo_objeto.add("div \n");
-			pilha_tipos.add("int64");
-		} else {
-			codigo_objeto.add("div \n");
-			pilha_tipos.add("float64");
-		}
+	    Object e1 = pilha_tipos.pop();
+	    Object e2 = pilha_tipos.pop();
+	    if ("int64".equals(e1) && "int64".equals(e2)) {
+	        codigo_objeto.add("div \n");
+	        pilha_tipos.add("int64");
+	    } else {
+	        codigo_objeto.add("div \n");
+	        pilha_tipos.add("float64");
+	    }
 	}
 
 	private void metodo_acao104() {
 		// TODO Auto-generated method stub
 		pilha_tipos.pop();
 		pilha_tipos.pop();
-		pilha_tipos.add("bool");
+		pilha_tipos.push("bool");
 		codigo_objeto.add("or \n");
 		
 	}
@@ -379,7 +381,7 @@ public class Semantico implements Constants
 		// TODO Auto-generated method stub
 		pilha_tipos.pop();
 		pilha_tipos.pop();
-		pilha_tipos.add("bool");
+		pilha_tipos.push("bool");
 		codigo_objeto.add("and \n");
 		
 	}
@@ -387,18 +389,18 @@ public class Semantico implements Constants
 	private void metodo_acao116(Token token) {
 		// TODO Auto-generated method stub
 		pilha_tipos.push("string");
-		codigo_objeto.add("ldstr" + token.getLexeme() + "\n");
+		codigo_objeto.add("ldstr " + token.getLexeme() + "\n");
 	}
 
 	private void metodo_acao106() {
 		// TODO Auto-generated method stub
-		pilha_tipos.add("bool");
+		pilha_tipos.push("bool");
 		codigo_objeto.add("ldc.i4.0 \n");
 	}
 
 	private void metodo_acao105() {
 		// TODO Auto-generated method stub
-		pilha_tipos.add("bool");
+		pilha_tipos.push("bool");
 		codigo_objeto.add("ldc.i4.1 \n");
 	}
 
@@ -410,7 +412,7 @@ public class Semantico implements Constants
 
 	private void metodo_acao114(Token token) {
 		// TODO Auto-generated method stub
-		pilha_tipos.add("int64");
+		pilha_tipos.push("float64");
 		codigo_objeto.add("ldc.i8 " + token.getLexeme() + "\n");
 		codigo_objeto.add("conv.r8" + "\n");
 	}
@@ -446,7 +448,7 @@ public class Semantico implements Constants
 		codigo_objeto.add("  ret\r\n"
 				+ "  }\r\n"
 				+ "}");
-		
+		System.out.println(codigo_objeto);
 		//for (int i = 0; i<codigo_objeto.size(); i++) {
 		//	System.out.print(codigo_objeto.get(i));	
 		}
