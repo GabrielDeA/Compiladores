@@ -123,7 +123,7 @@ public class Semantico implements Constants
     
     private void metodo_acao128(Token token) throws SemanticError{
 		String tipoExpressao = (String) pilha_tipos.pop();
-		for(int i= 0; i < lista_id.size(); i++) {
+		for(int i= 0; i < lista_id.size() - 1; i++) {
 			codigo_objeto.add("dup \n");
 		}
 		for(String id : lista_id) {
