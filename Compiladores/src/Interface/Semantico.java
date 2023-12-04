@@ -139,7 +139,7 @@ public class Semantico implements Constants
 				codigo_objeto.add("conv.i8 \n");
 			}
 			
-			codigo_objeto.add("stloc" + id + " \n");
+			codigo_objeto.add("stloc " + id + " \n");
 		}
 		
 		lista_id.clear();
