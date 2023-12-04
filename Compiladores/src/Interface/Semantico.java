@@ -69,7 +69,7 @@ public class Semantico implements Constants
     private void metodo_acao131(Token token) throws SemanticError {
         String identificador = token.getLexeme();
         if (!tabela_simbolos.containsKey(identificador)) {
-            throw new SemanticError("Identificador não declarado: " + identificador);
+            throw new SemanticError(identificador + " não declarado", token.getPosition());
         }
 
         String[] tipoIdentificador = tabela_simbolos.get(identificador);
@@ -111,7 +111,7 @@ public class Semantico implements Constants
     private void metodo_acao129() throws SemanticError {
         for (String id : lista_id) {
             if (!tabela_simbolos.containsKey(id)) {
-                throw new SemanticError("Identificador não declarado: " + id);
+                throw new SemanticError(id + " não declarado");
             }
             String[] tipoIdentificador = tabela_simbolos.get(id);
             String tipo = tipoIdentificador[0];
@@ -128,11 +128,11 @@ public class Semantico implements Constants
 		}
 		for(String id : lista_id) {
 			if(!tabela_simbolos.containsKey(id)) {
-				throw new SemanticError(id + " não declarado");
+				throw new SemanticError(id + " não declarado", token.getPosition());
 			} 
 			String[] tipoIdentificador = tabela_simbolos.get(id);
 			if (tipoIdentificador != null && tipoIdentificador.length > 1 && tipoIdentificador[1] != null && tipoIdentificador[1].equals("const")) {
-				throw new SemanticError("Não é possível atribuir valor a uma constante: " + id);
+				throw new SemanticError("Não é possível atribuir valor a uma constante: " + id, token.getPosition());
 			}
 			
 			if (tipoExpressao.equals("int64")) {
@@ -148,7 +148,7 @@ public class Semantico implements Constants
 	private void metodo_acao127(Token token) throws SemanticError{
 		for (String id : lista_id) {
 			if(tabela_simbolos.containsKey(id)) {
-				throw new SemanticError(token.getLexeme() + "ja declarado");
+				throw new SemanticError(token.getLexeme() + "ja declarado", token.getPosition());
 			}
 		}
 		for (String id : lista_id) {
@@ -162,7 +162,7 @@ public class Semantico implements Constants
 	        } else if (id.startsWith("_b")) {
 	            tipo = "bool";
 	        } else {
-	            throw new SemanticError(id + " não é um identificador");
+	            throw new SemanticError(id + " não é um identificador", token.getPosition());
 	        }
 			
 			String[] tipoIdentificador = new String[2];
@@ -179,7 +179,7 @@ public class Semantico implements Constants
 	private void metodo_acao126(Token token) throws SemanticError{
 		for (String id : lista_id) {
 			if(tabela_simbolos.containsKey(id)) {
-				throw new SemanticError(token.getLexeme() + "ja declarado");
+				throw new SemanticError(token.getLexeme() + "ja declarado", token.getPosition());
 			}
 		}
 			for (String id : lista_id) {
@@ -193,7 +193,7 @@ public class Semantico implements Constants
 		        } else if (id.startsWith("_b")) {
 		            tipo = "bool";
 		        } else {
-		            throw new SemanticError(id + " não é um identificador");
+		            throw new SemanticError(id + " não é um identificador", token.getPosition());
 		        }
 		        
 		        String[] tipoIdentificador = new String[2];
