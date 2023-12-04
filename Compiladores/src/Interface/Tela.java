@@ -401,13 +401,9 @@ public class Tela extends JFrame {
 			sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
 			textPaneMensagens.setText("programa compilado com sucesso");
 		}
-		// mensagem: programa compilado com sucesso - área reservada para mensagens
-		
 		catch ( LexicalError e )
 		{
-			textPaneMensagens.setText("");
-			String mensagemErro = "Erro na linha " + getLineFromPosition(e.getPosition(), inputText) + " - " + e.getLexeme() + " " + e.getMessage();
-			textPaneMensagens.setText(mensagemErro);
+			textPaneMensagens.setText("Erro na linha " + getLineFromPosition(e.getPosition(), inputText) + " - " + e.getLexeme() + e.getMessage());
 		}
 		catch ( SyntaticError e )
 		{	
@@ -415,22 +411,20 @@ public class Tela extends JFrame {
 		}
 		catch ( SemanticError e )
 		{
-			//Trata erros semânticos
+			 textPaneMensagens.setText("Erro na linha " + getLineFromPosition(e.getPosition(), inputText) + " - " + sintatico.getCurrentToken().getLexeme() + e.getMessage());
 		}
-		if(lblStatus.equals("")) {
+		if(lblStatus.getText().equals("")) {
 			
 		} else {
-			String selectedFileIl = lblStatus.getText().substring(0, lblStatus.getText().length() - 4) + ".il";
-			String content = textAreaEditor.getText();
+			
+			String selectedFileIl = lblStatus.getText().substring(0, lblStatus.getText().length()) + ".il";
+			String codCompilado = semantico.getCodigo_Objeto();
 			try (BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFileIl))) {
-                writer.write(content);
+                writer.write(codCompilado);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 		}
-		
-		//textPaneMensagens.setText("programa compilado com sucesso");
-		
 	}
 	
 	public static int getLineFromPosition(int position, String input) {
@@ -467,7 +461,7 @@ public class Tela extends JFrame {
 		        }
 		} else {
 			 String content = textAreaEditor.getText();
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(lblStatus.getText()))) {
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(lblStatus.getText()+".txt"))) {
 				writer.write(content);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -527,7 +521,7 @@ public class Tela extends JFrame {
 			  try {
 				  String filePath = chooser.getSelectedFile().getAbsolutePath();
 				  String fileContent = readFile(filePath);
-				  lblStatus.setText(filePath);
+				  lblStatus.setText(filePath.substring(0, filePath.length() - 4));
 				 textAreaEditor.setText(fileContent);
 				 textPaneMensagens.setText("");
 			  } catch (Exception e ) {

@@ -10,12 +10,20 @@ public class Semantico implements Constants
 {
 	private String operador_relacional;
 	//private ArrayList<String> codigo_objeto = new ArrayList<String>(); 
-	private List<String> codigo_objeto = new ArrayList<String>();
+	public List<String> codigo_objeto = new ArrayList<String>();
 	private Stack pilha_tipos = new Stack();
 	private Stack pilha_rotulos = new Stack();
 	int contador_rotulos = 0;
 	private List<String> lista_id = new ArrayList<String>();
 	private Map<String, String[]> tabela_simbolos  = new HashMap<String, String[]>();
+	
+	public String getCodigo_Objeto () {
+		String str = "";
+		for (int i = 0; i<codigo_objeto.size(); i++) {
+			str += codigo_objeto.get(i);
+				}
+		return str;
+	}
 	
     public void executeAction(int action, Token token)	throws SemanticError
     {
@@ -50,11 +58,69 @@ public class Semantico implements Constants
 		case 126: metodo_acao126 (token);  break;
 		case 127: metodo_acao127 (token);  break;
 		case 128: metodo_acao128 (token);  break;
+		case 129: metodo_acao129 ();  	   break;
+		case 130: metodo_acao130 (token);  break;
+		case 131: metodo_acao131 (token);  break;
 		
 	 	default:  System.out.println("Ação #"+action+", com token: "+token+" não foi implementada."); 
 		}
     }
+    
+    private void metodo_acao131(Token token) throws SemanticError {
+        String identificador = token.getLexeme();
+        if (!tabela_simbolos.containsKey(identificador)) {
+            throw new SemanticError("Identificador não declarado: " + identificador);
+        }
 
+        String[] tipoIdentificador = tabela_simbolos.get(identificador);
+
+        if (tipoIdentificador[1].equals("const")) {
+            switch (tipoIdentificador[0]) {
+                case "int64":
+                    codigo_objeto.add("ldc.i8 " + tipoIdentificador[2] + "\n");
+                    break;
+                case "float64":
+                    codigo_objeto.add("ldc.r8 " + tipoIdentificador[2] + "\n");
+                    break;
+                case "string":
+                    codigo_objeto.add("ldstr " + tipoIdentificador[2] + "\n");
+                    break;
+                case "bool":
+                    codigo_objeto.add("ldc.i4." + (tipoIdentificador[2].equals("true") ? "1" : "0") + "\n");
+                    break;
+            }
+            if (tipoIdentificador[0].equals("int64")) {
+                codigo_objeto.add("conv.r8 \n");
+            }
+            pilha_tipos.push(tipoIdentificador[0]);
+        } else {
+            codigo_objeto.add("ldloc " + identificador + "\n");
+            if (tipoIdentificador[0].equals("int64")) {
+                codigo_objeto.add("conv.r8 \n");
+            }
+            pilha_tipos.push(tipoIdentificador[0]);
+        }
+    }
+
+	private void metodo_acao130(Token token) {
+        codigo_objeto.add("ldstr " + token.getLexeme() + "\n");
+        codigo_objeto.add("call void [mscorlib]System.Console::Write(string)\n");
+    }
+
+
+    private void metodo_acao129() throws SemanticError {
+        for (String id : lista_id) {
+            if (!tabela_simbolos.containsKey(id)) {
+                throw new SemanticError("Identificador não declarado: " + id);
+            }
+            String[] tipoIdentificador = tabela_simbolos.get(id);
+            String tipo = tipoIdentificador[0];
+            codigo_objeto.add("call string [mscorlib]System.Console::ReadLine()\n");
+            codigo_objeto.add("stloc " + id + "\n");
+        }
+        lista_id.clear();
+    }
+    
     private void metodo_acao128(Token token) throws SemanticError{
 		pilha_tipos.pop();
 		for(int i= 0; i > lista_id.size(); i--) {
@@ -167,17 +233,17 @@ public class Semantico implements Constants
     	if(!pilha_tipos.pop().equals("bool")) {
 			throw new SemanticError ("expressao incompativel em comando de repeticao", token.getPosition());
 		}
-    	String rotulo = "novo_rotulo";
-    	codigo_objeto.add("brfalse " + rotulo + contador_rotulos++ + "\n");
-    	pilha_rotulos.push(rotulo + contador_rotulos);
+    	String rotulo = "novo_rotulo" + contador_rotulos++;
+    	codigo_objeto.add("brfalse " + rotulo  + "\n"); //removido + contador_rotulos++
+    	pilha_rotulos.push(rotulo ); //removido + contador_rotulos
 	}
 	
 
 	private void metodo_acao121() {
 		// TODO Auto-generated method stub
-		String rotulo = "novo_rotulo";
-		codigo_objeto.add(rotulo + contador_rotulos++ + ": " + "\n");
-		pilha_rotulos.push(rotulo + contador_rotulos);
+		String rotulo = "novo_rotulo" + contador_rotulos++;
+		codigo_objeto.add(rotulo + ": " + "\n"); //removido + contador_rotulos++ 
+		pilha_rotulos.push(rotulo ); //removido + contador_rotulos
 	}
 
 	private void metodo_acao119() {
@@ -187,11 +253,11 @@ public class Semantico implements Constants
 
 	private void metodo_acao120() {
 		// TODO Auto-generated method stub
-		String rotulo = "novo_rotulo";
-		codigo_objeto.add("br " + rotulo + contador_rotulos++ + "\n");
+		String rotulo = "novo_rotulo" + contador_rotulos++;
+		codigo_objeto.add("br " + rotulo + "\n"); // removido: + contador_rotulos++ 
 		String rotulo2 = (String) pilha_rotulos.pop();
-		codigo_objeto.add(rotulo2 + ": " + "n");
-		pilha_rotulos.add(rotulo + contador_rotulos);
+		codigo_objeto.add(rotulo2 + ": " + "\n");
+		pilha_rotulos.add(rotulo ); //removido: + contador_rotulos
 		}
 
 	private void metodo_acao118(Token token) throws SemanticError {
@@ -199,9 +265,9 @@ public class Semantico implements Constants
 		if(!pilha_tipos.pop().equals("bool")) {
 			throw new SemanticError ("expressao incompativel em comando de selecao", token.getPosition());
 		}
-    	String rotulo = "novo_rotulo";
-    	codigo_objeto.add("brfalse " + rotulo + contador_rotulos++ + "\n");
-    	pilha_rotulos.push(rotulo + contador_rotulos);
+    	String rotulo = "novo_rotulo" + contador_rotulos ++;
+    	codigo_objeto.add("brfalse " + rotulo + "\n"); //removido  + contador_rotulos++
+    	pilha_rotulos.push(rotulo); //removido  + contador_rotulos
 	}
 
 	private void metodo_acao117() {
