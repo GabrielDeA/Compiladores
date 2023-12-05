@@ -77,16 +77,16 @@ public class Semantico implements Constants
         if (tipoIdentificador[0].equals("const")) {
             switch (tipoIdentificador[0]) {
                 case "int64":
-                    codigo_objeto.add("ldc.i8 " + tipoIdentificador[0] + "\n");
+                    codigo_objeto.add("ldc.i8 " + tipoIdentificador[1] + "\n");
                     break;
                 case "float64":
-                    codigo_objeto.add("ldc.r8 " + tipoIdentificador[0] + "\n");
+                    codigo_objeto.add("ldc.r8 " + tipoIdentificador[1] + "\n");
                     break;
                 case "string":
-                    codigo_objeto.add("ldstr " + tipoIdentificador[0] + "\n");
+                    codigo_objeto.add("ldstr " + tipoIdentificador[1] + "\n");
                     break;
                 case "bool":
-                    codigo_objeto.add("ldc.i4." + (tipoIdentificador[0].equals("true") ? "1" : "0") + "\n");
+                    codigo_objeto.add("ldc.i4." + (tipoIdentificador[1].equals("true") ? "1" : "0") + "\n");
                     break;
             }
             if (tipoIdentificador[0].equals("int64")) {
@@ -118,13 +118,13 @@ public class Semantico implements Constants
             codigo_objeto.add("call string [mscorlib]System.Console::ReadLine()\n");
             switch(tipo) {
             case "int64":
-            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Int64::Parse(string)");
+            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Int64::Parse(string)\n");
             	break;
             case "float64":
-            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Double::Parse(string)");
+            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Double::Parse(string)\n");
             	break;
             case "bool":
-            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Boolean::Parse(string)");
+            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Boolean::Parse(string)\n");
             	break;
             case "string":
             	break;
@@ -135,7 +135,8 @@ public class Semantico implements Constants
     }
     
     private void metodo_acao128(Token token) throws SemanticError{
-		String tipoExpressao = (String) pilha_tipos.pop();
+	//	String tipoExpressao = (String) pilha_tipos.pop();
+    	Object tipoExpressao = pilha_tipos.pop();
 		for(int i= 0; i < lista_id.size() - 1; i++) {
 			codigo_objeto.add("dup \n");
 		}
@@ -148,7 +149,7 @@ public class Semantico implements Constants
 				throw new SemanticError("Não é possível atribuir valor a uma constante: " + id, token.getPosition());
 			}
 			
-			if (tipoExpressao.equals("int64")) {
+			if (tipoIdentificador[0].equals("int64")) {
 				codigo_objeto.add("conv.i8 \n");
 			}
 			
