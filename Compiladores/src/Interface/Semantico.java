@@ -462,9 +462,7 @@ public class Semantico implements Constants
 		codigo_objeto.add("  ret\r\n"
 				+ "  }\r\n"
 				+ "}");
-		System.out.println(codigo_objeto);
-		//for (int i = 0; i<codigo_objeto.size(); i++) {
-		//	System.out.print(codigo_objeto.get(i));	
+	
 		}
 		
 	
