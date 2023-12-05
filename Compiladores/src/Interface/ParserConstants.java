@@ -1,5 +1,3 @@
-package Interface;
-
 public interface ParserConstants
 {
     int START_SYMBOL = 37;
@@ -76,7 +74,7 @@ public interface ParserConstants
         {  12,  25,  48,  26 },
         {   5, 201,  49 },
         {  42, 200,  50 },
-        {  21,  42,  51 },
+        {  21,  42, 200,  51 },
         {   0 },
         {  22,  48 },
         {   0 },

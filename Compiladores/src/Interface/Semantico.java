@@ -116,6 +116,19 @@ public class Semantico implements Constants
             String[] tipoIdentificador = tabela_simbolos.get(id);
             String tipo = tipoIdentificador[0];
             codigo_objeto.add("call string [mscorlib]System.Console::ReadLine()\n");
+            switch(tipo) {
+            case "int64":
+            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Int64::Parse(string)");
+            	break;
+            case "float64":
+            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Double::Parse(string)");
+            	break;
+            case "bool":
+            	codigo_objeto.add("call " +  tipo + " [mscorlib]System.Boolean::Parse(string)");
+            	break;
+            case "string":
+            	break;
+            }
             codigo_objeto.add("stloc " + id + "\n");
         }
         lista_id.clear();
