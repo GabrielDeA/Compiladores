@@ -141,7 +141,7 @@ while = palavra_reservada: "while"
 <cmd_atribuicao> ::= <lista_id> "=" <expressao> #128 ;
 <cmd_entrada> ::= in "(" <lista_entrada> ")" ;
 
-<lista_entrada> ::= constanteS <lista_entrada1> #130 | <lista_id> #129 <lista_entrada2> ;
+<lista_entrada> ::= constanteS #130 <lista_entrada1> | <lista_id> #129 <lista_entrada2> ;
 
 
 <lista_entrada1> ::= "," <lista_id> <lista_entrada3> ;

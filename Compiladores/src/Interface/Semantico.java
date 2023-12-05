@@ -77,16 +77,16 @@ public class Semantico implements Constants
         if (tipoIdentificador[0].equals("const")) {
             switch (tipoIdentificador[0]) {
                 case "int64":
-                    codigo_objeto.add("ldc.i8 " + tipoIdentificador[2] + "\n");
+                    codigo_objeto.add("ldc.i8 " + tipoIdentificador[0] + "\n");
                     break;
                 case "float64":
-                    codigo_objeto.add("ldc.r8 " + tipoIdentificador[2] + "\n");
+                    codigo_objeto.add("ldc.r8 " + tipoIdentificador[0] + "\n");
                     break;
                 case "string":
-                    codigo_objeto.add("ldstr " + tipoIdentificador[2] + "\n");
+                    codigo_objeto.add("ldstr " + tipoIdentificador[0] + "\n");
                     break;
                 case "bool":
-                    codigo_objeto.add("ldc.i4." + (tipoIdentificador[2].equals("true") ? "1" : "0") + "\n");
+                    codigo_objeto.add("ldc.i4." + (tipoIdentificador[0].equals("true") ? "1" : "0") + "\n");
                     break;
             }
             if (tipoIdentificador[0].equals("int64")) {
